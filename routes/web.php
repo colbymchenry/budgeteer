@@ -19,4 +19,26 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::group(['middleware' => ['auth']], function () {
+
+    Route::get('/home', 'HomeController@index')->name('home');
+
+    Route::view('/account', 'account')->name('account');
+
+    Route::post('/submit_account_changes', 'AccountController@submitChanges')->name('submit_account_changes');
+
+    Route::post('/add_category', 'AccountController@addCategory')->name('add_category');
+
+    Route::post('/del_category', 'AccountController@delCategory')->name('del_category');
+
+    Route::post('/edit_category', 'AccountController@editCategory')->name('edit_category');
+
+    Route::post('/add_expense', 'AccountController@addExpense')->name('add_expense');
+
+    Route::post('/del_expense', 'AccountController@delExpense')->name('del_expense');
+
+    Route::post('/edit_expense', 'AccountController@editExpense')->name('edit_expense');
+
+});
+
+
