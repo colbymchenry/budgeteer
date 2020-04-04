@@ -17,6 +17,7 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->string('password');
+            $table->integer('monthly_income')->default(1000);
             $table->rememberToken();
             $table->timestamps();
         });

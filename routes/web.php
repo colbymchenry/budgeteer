@@ -25,19 +25,21 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::view('/account', 'account')->name('account');
 
-    Route::post('/submit_account_changes', 'AccountController@submitChanges')->name('submit_account_changes');
+    Route::post('/update_monthly_income', 'AccountController@updateMonthlyIncome')->name('update_monthly_income');
 
-    Route::post('/add_category', 'AccountController@addCategory')->name('add_category');
+    Route::post('/add_category', 'CategoryController@addCategory')->name('add_category');
 
-    Route::post('/del_category', 'AccountController@delCategory')->name('del_category');
+    Route::post('/del_category', 'CategoryController@delCategory')->name('del_category');
 
-    Route::post('/edit_category', 'AccountController@editCategory')->name('edit_category');
+    Route::post('/rename_category', 'CategoryController@renameCategory')->name('rename_category');
 
-    Route::post('/add_expense', 'AccountController@addExpense')->name('add_expense');
+    Route::post('/update_limits', 'CategoryController@updateLimits')->name('update_limits');
 
-    Route::post('/del_expense', 'AccountController@delExpense')->name('del_expense');
+    Route::post('/add_expense', 'ExpenseController@addExpense')->name('add_expense');
 
-    Route::post('/edit_expense', 'AccountController@editExpense')->name('edit_expense');
+    Route::post('/del_expense', 'ExpenseController@delExpense')->name('del_expense');
+
+    Route::post('/edit_expense', 'ExpenseController@editExpense')->name('edit_expense');
 
 });
 

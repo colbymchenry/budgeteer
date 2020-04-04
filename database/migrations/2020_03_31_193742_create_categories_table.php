@@ -17,6 +17,7 @@ class CreateCategoriesTable extends Migration
             $table->id();
             $table->integer('user');
             $table->string('name');
+            $table->integer('limit')->default(100);
             $table->timestamps();
         });
     }

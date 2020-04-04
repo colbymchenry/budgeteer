@@ -6,7 +6,7 @@ use App\Category;
 use App\Expense;
 use Illuminate\Http\Request;
 
-class AccountController extends Controller
+class ExpenseController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -28,14 +28,18 @@ class AccountController extends Controller
         return view('home');
     }
 
-    public function updateMonthlyIncome(Request $request) {
+
+    public function addExpense(Request $request) {
+        $category = $request['category'];
         $amount = $request['amount'];
 
-        $user = auth()->user();
-        $user->monthly_income = $amount;
-        $user->save();
+        $expense = new Expense();
+        $expense->user = auth()->user()->id;
+        $expense->category = $category;
+        $expense->amount = $amount;
+        $expense->save();
 
-        return response()->json(['success' => true]);
+        return response()->json(['success' => true, 'expense' => $expense]);
     }
 
 }
