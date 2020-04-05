@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -40,6 +41,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/del_expense', 'ExpenseController@delExpense')->name('del_expense');
 
     Route::post('/edit_expense', 'ExpenseController@editExpense')->name('edit_expense');
+
+    Route::get('/view_expenses', 'ExpenseController@viewExpenses')->name('view_expenses');
 
 });
 

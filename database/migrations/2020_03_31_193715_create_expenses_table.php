@@ -18,6 +18,7 @@ class CreateExpensesTable extends Migration
             $table->integer('user');
             $table->integer('category');
             $table->integer('amount');
+            $table->string('memo')->nullable();
             $table->timestamps();
         });
     }
