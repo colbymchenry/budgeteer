@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Category;
 use Illuminate\Http\Request;
 use \App\Expense;
 use DateTime;
@@ -34,7 +35,7 @@ class HomeController extends Controller
         // add up all expenses
         $expenses = array();
         for($i = 12; $i > 0; $i--) {
-            $expenses_for_month = Expense::where('id', auth()->user()->id)->whereMonth('created_at', $i)->get();
+            $expenses_for_month = Expense::where('user', auth()->user()->id)->whereMonth('created_at', $i)->get();
             $expenses[$i] = $expenses_for_month;
         }
 
@@ -50,6 +51,19 @@ class HomeController extends Controller
             }
         }
 
-        return view('home')->with('month', $month)->with('year', $year)->with('day', $day)->with('expenses', $expenses)->with('month_selections_html', $month_selections_html);
+        $net = auth()->user()->monthly_income - Expense::where('user', auth()->user()->id)->whereMonth('created_at', intval($month))->sum('amount');
+        $total_budget = Category::where('user', auth()->user()->id)->sum('limit');
+        $budgeted_fun_money = auth()->user()->monthly_income - $total_budget;
+
+        if($net < $budgeted_fun_money) {
+            $budgeted_fun_money = $net;
+        }
+
+        $actual_expenses = \App\Expense::where('user', auth()->user()->id)->whereMonth('created_at', intval($month))->sum('amount');
+        $left_for_budget = \App\Category::where('user', auth()->user()->id)->sum('limit') - \App\Expense::where('user', auth()->user()->id)->whereMonth('created_at', intval($month))->sum('amount');
+
+        return view('home')->with('month', intval($month))->with('year', $year)->with('day', $day)
+        ->with('expenses', $expenses)->with('month_selections_html', $month_selections_html)
+        ->with('fun_money', $budgeted_fun_money)->with('actual_expenses', $actual_expenses)->with('left_for_budget', $left_for_budget);
     }
 }

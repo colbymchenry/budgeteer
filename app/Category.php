@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model
 {
-    protected $fillable = ['user', 'name'];
+    protected $fillable = ['user', 'name', 'limit'];
 
     public function getTotalForMonth($month) {
         return Expense::where('user', auth()->user()->id)->where('category', $this->id)->whereMonth('created_at', $month)->sum('amount');

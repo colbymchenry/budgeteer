@@ -13,6 +13,7 @@
 
                             <div class="form-group row">
                                 <label for="income-monthly" class="col-md-6 col-form-label text-md-right">Monthly Income</label>
+                                <small style="padding-left: 1em;">* (Take out State and Federal Taxes)</small>
 
                                 <div class="col-md-6">
                                     <div class="input-group mb-3">

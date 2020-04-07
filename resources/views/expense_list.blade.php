@@ -25,9 +25,9 @@
                             @foreach($expenses as $expense)
                             <div class="row">
                                 <tr>
-                                    <th scope="row" >1/1/2020</th>
-                                    <td>${{ $expense->amount }}</td>
-                                    <td>{{ $expense->memo }}</td>
+                                <th scope="row" ><small>{{ $expense->created_at->format('m/d/Y') }}</small></th>
+                                    <td><small>${{ $expense->amount }}</small></td>
+                                    <td><small>{{ ($expense->memo == '' ? 'N/A' : $expense->memo) }}</small></td>
                                 </tr>
                             </div>
                             @endforeach

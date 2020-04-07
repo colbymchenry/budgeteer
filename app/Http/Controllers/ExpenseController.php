@@ -41,7 +41,14 @@ class ExpenseController extends Controller
         if($memo != null || $memo != "") $expense->memo = $memo;
         $expense->save();
 
-        return response()->json(['success' => true, 'expense' => $expense]);
+        $now = new \DateTime('now');
+        $month = $now->format('m');
+        $year = $now->format('Y');
+        $day = $now->format('d');
+
+        $percentage = ((Expense::where('user', auth()->user()->id)->where('category', $category)->whereMonth('created_at', intval($month))->sum('amount')) / (Category::where('user', auth()->user()->id)->where('id', $category)->get()[0]->limit))*100;
+
+        return response()->json(['success' => true, 'expense' => $expense, 'percentage' => $percentage]);
     }
 
     public function viewExpenses(Request $request) {
@@ -52,6 +59,32 @@ class ExpenseController extends Controller
         $expenses = Expense::where('user', auth()->user()->id)->where('category', $category_id)->whereMonth('created_at', $month)->get();
 
         return view('expense_list')->with('expenses', $expenses)->with('category', $category);
+    }
+
+    public function getExpensesForMonth(Request $request) {
+        $month = $request['month'];
+
+        $categories = array();
+        foreach(Category::where('user', auth()->user()->id)->get() as $category) {
+            $categories[$category->id] = [
+                'amount' => $category->getTotalForMonth($month),
+                'name' => $category->name,
+                'percentage' => round(($category->getTotalForMonth($month) / $category->limit) * 100),
+            ];
+        }
+
+        $net = auth()->user()->monthly_income - Expense::where('user', auth()->user()->id)->whereMonth('created_at', intval($month))->sum('amount');
+        $total_budget = Category::where('user', auth()->user()->id)->sum('limit');
+        $budgeted_fun_money = auth()->user()->monthly_income - $total_budget;
+
+        if($net < $budgeted_fun_money) {
+            $budgeted_fun_money = $net;
+        }
+
+        $actual_expenses = \App\Expense::where('user', auth()->user()->id)->whereMonth('created_at', intval($month))->sum('amount');
+        $left_for_budget = \App\Category::where('user', auth()->user()->id)->sum('limit') - \App\Expense::where('user', auth()->user()->id)->whereMonth('created_at', intval($month))->sum('amount');
+
+        return response()->json(['success' => true, 'categories' => $categories, 'actual_expenses' => $actual_expenses, 'left_for_budget' => ($left_for_budget < 0 ? 0 : $left_for_budget), 'fun_money' => $budgeted_fun_money]);
     }
 
 }
