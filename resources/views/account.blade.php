@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">Account Setup</div>
+                <div class="card-header">Budget Settings</div>
 
                 <div class="card-body">
                     <div class="container">

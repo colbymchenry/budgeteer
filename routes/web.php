@@ -1,5 +1,6 @@
 <?php
 
+use App\Category;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -25,6 +26,19 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/home', 'HomeController@index')->name('home');
 
     Route::view('/account', 'account')->name('account');
+
+    Route::get('/bank_account', function() {
+        $now = time(); // or your date as well
+        $your_date = strtotime(auth()->user()->getBankAccount()->next_paycheck);
+        $datediff = $your_date - $now;
+
+        $daily_budget = Category::where('user', auth()->user()->id)->sum('limit') / 30;
+
+        return view('bank_account')->with('days_next_paycheck', round($datediff / (60 * 60 * 24)))
+        ->with('daily_budget', $daily_budget);
+    })->name('bank_account');
+
+    Route::post('/update_bank_account', 'AccountController@updateBankAccount')->name('update_bank_account');
 
     Route::post('/update_monthly_income', 'AccountController@updateMonthlyIncome')->name('update_monthly_income');
 

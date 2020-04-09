@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\BankAccount;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\User;
@@ -63,9 +64,15 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
+        $user = User::create([
             'name' => $data['name'],
             'password' => Hash::make($data['password']),
         ]);
+
+        $bankaccount = new BankAccount();
+        $bankaccount->user = $user->id;
+        $bankaccount->save();
+
+        return $user;
     }
 }

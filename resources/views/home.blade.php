@@ -13,6 +13,12 @@
                             {{ session('status') }}
                         </div>
                     @endif
+
+                    @if(auth()->user()->getBankAccount()->next_paycheck != null && auth()->user()->getBankAccount()->next_paycheck < now())
+                        <div class="alert alert-warning" role="alert">
+                            Update Next Paycheck in <a href="{{ route('bank_account') }}">Bank Account</a>
+                        </div>
+                    @endif
                     <button onclick="addExpense()" class="btn btn-secondary" style="display: block;margin: auto;width: 10em;height: 10em;"><span style="font-size: 84px;">+</span></button>
                 </div>
             </div>
@@ -38,7 +44,7 @@
                             <small>Monthly Income:</small>
                         </div>
                         <div class="col">
-                            <small>${{ auth()->user()->monthly_income }}</small>
+                            <small>&nbsp;&nbsp;&nbsp;${{ auth()->user()->monthly_income }}</small>
                         </div>
                     </div>
 

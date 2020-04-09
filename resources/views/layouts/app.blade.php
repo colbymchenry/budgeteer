@@ -64,7 +64,12 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('account') }}">
-                                    Settings
+                                    Budget Settings
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('bank_account') }}">
+                                    Bank Account
                                 </a>
                             </li>
                             <li class="nav-item">

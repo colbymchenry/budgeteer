@@ -28,4 +28,7 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    public function getBankAccount() {
+        return BankAccount::where('user', $this->id)->get()[0];
+    }
 }
