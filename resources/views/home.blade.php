@@ -221,7 +221,6 @@
         async function addExpense() {
 
             const { value: category } = await Swal.fire({
-                title: 'Which Category:',
                 input: 'select',
                 inputOptions: categories_array,
                 inputPlaceholder: 'Select a Category',

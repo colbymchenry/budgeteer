@@ -118,7 +118,7 @@
 
 
         const { value: name } = await Swal.fire({
-            title: 'Name of new Category:',
+            inputPlaceholder: 'Name of Category',
             input: 'text',
             showCancelButton: true,
             confirmButtonText: 'Next',
