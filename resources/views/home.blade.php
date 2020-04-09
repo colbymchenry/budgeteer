@@ -2,8 +2,8 @@
 
 @section('content')
 <div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
+    {{-- <div class="row justify-content-center"> --}}
+        {{-- <div class="col-md-8">
             <div class="card">
                 <div class="card-header">Dashboard</div>
 
@@ -22,8 +22,8 @@
                     <button onclick="addExpense()" class="btn btn-secondary" style="display: block;margin: auto;width: 10em;height: 10em;"><span style="font-size: 84px;">+</span></button>
                 </div>
             </div>
-        </div>
-    </div>
+        </div> --}}
+    {{-- </div> --}}
     <p></p>
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -84,7 +84,7 @@
                             @endif
                         </div>
                         <div class="col">
-                            <small id="fun-money">${{ $fun_money }}</small>
+                            <small id="fun-money">&nbsp;&nbsp;&nbsp;${{ $fun_money->limit }}</small>
                         </div>
                     </div>
 
@@ -103,11 +103,11 @@
                             <tbody id="expenses_body">
                                 <tr>
                                     <th scope="row" >
-                                        <a id="category-expenses_{{ $fun_money_category->id }}" href="{{ route('view_expenses') }}?category={{ $fun_money_category->id}}&month={{ $month }}"><u>{{ $fun_money_category->name }}</u></a>
+                                        <a id="category-expenses_{{ $fun_money->id }}" href="{{ route('view_expenses') }}?category={{ $fun_money->id}}&month={{ $month }}"><u>{{ $fun_money->name }}</u></a>
                                     </th>
                                     <td>
-                                        <div class="progress">
-                                            <div class="progress-bar @if(round(($fun_money_category->getTotalForMonth($month) / $fun_money_category->limit) * 100) >= 100) bg-danger @endif" role="progressbar" style="width: {{ round(($fun_money_category->getTotalForMonth($month) / $fun_money_category->limit) * 100) }}%;" aria-valuenow="{{ round(($fun_money_category->getTotalForMonth($month) / $fun_money_category->limit) * 100) }}" aria-valuemin="0" aria-valuemax="100" id="progress_{{ $fun_money_category->id }}">{{ round(($fun_money_category->getTotalForMonth($month) / $fun_money_category->limit) * 100) }}%</div>
+                                        <div class="progress" onclick="addExpense('{{ $fun_money->id }}', '{{ $fun_money->name }}')">
+                                            <div class="progress-bar @if(round(($fun_money->getTotalForMonth($month) / $fun_money->limit) * 100) >= 100) bg-danger @endif" role="progressbar" style="width: {{ round(($fun_money->getTotalForMonth($month) / $fun_money->limit) * 100) }}%;" aria-valuenow="{{ round(($fun_money->getTotalForMonth($month) / $fun_money->limit) * 100) }}" aria-valuemin="0" aria-valuemax="100" id="progress_{{ $fun_money->id }}">{{ round(($fun_money->getTotalForMonth($month) / $fun_money->limit) * 100) }}%</div>
                                         </div>
                                     </td>
                                 </tr>
@@ -117,7 +117,7 @@
                                             <a id="category-expenses_{{ $category->id }}" href="{{ route('view_expenses') }}?category={{ $category->id}}&month={{ $month }}"><u>{{ $category->name }}</u></a>
                                         </th>
                                         <td>
-                                            <div class="progress">
+                                            <div class="progress" onclick="addExpense('{{ $category->id }}', '{{ $category->name }}')">
                                                 <div class="progress-bar @if(round(($category->getTotalForMonth($month) / $category->limit) * 100) >= 100) bg-danger @endif" role="progressbar" style="width: {{ round(($category->getTotalForMonth($month) / $category->limit) * 100) }}%;" aria-valuenow="{{ round(($category->getTotalForMonth($month) / $category->limit) * 100) }}" aria-valuemin="0" aria-valuemax="100" id="progress_{{ $category->id }}">{{ round(($category->getTotalForMonth($month) / $category->limit) * 100) }}%</div>
                                             </div>
                                         </td>
@@ -173,13 +173,13 @@
 
                             if(percentage >= 100) {
                                 html += `
-                                    <div class="progress">
+                                    <div class="progress" onclick="addExpense('${id}', '${name}')">
                                         <div class="progress-bar bg-danger" role="progressbar" style="width: ${percentage}%;" aria-valuenow="${percentage}" aria-valuemin="0" aria-valuemax="100" id="progress_${id}">${percentage}%</div>
                                     </div>
                                 `;
                             } else {
                                 html += `
-                                    <div class="progress">
+                                    <div class="progress" onclick="addExpense('${id}', '${name}')">
                                         <div class="progress-bar" role="progressbar" style="width: ${percentage}%;" aria-valuenow="${percentage}" aria-valuemin="0" aria-valuemax="100" id="progress_${id}">${percentage}%</div>
                                     </div>
                                 `;
@@ -228,79 +228,65 @@
         categories_array[-1] = "Fun Money";
 
 
-        async function addExpense() {
+        async function addExpense(category_id, name) {
 
-            const { value: category } = await Swal.fire({
-                input: 'select',
-                inputOptions: categories_array,
-                inputPlaceholder: 'Select a Category',
+            const { value: amount } = await Swal.fire({
+                title: 'Amount',
+                msg: name,
+                input: 'text',
                 showCancelButton: true,
                 confirmButtonText: 'Next',
                 inputValidator: (value) => {
-                    return new Promise((resolve) => {
-                        resolve();
-                    });
+                    if (!value) {
+                        return 'You need to write something!'
+                    }
+
+                    if(!regex.test(value)) {
+                        return 'Invalid amount';
+                    }
                 }
             });
 
-            if (category) {
-                const { value: amount } = await Swal.fire({
-                    title: 'Amount',
-                    input: 'text',
-                    showCancelButton: true,
-                    confirmButtonText: 'Next',
-                    inputValidator: (value) => {
-                        if (!value) {
-                            return 'You need to write something!'
-                        }
+            if(amount) {
 
-                        if(!regex.test(value)) {
-                            return 'Invalid amount';
-                        }
-                    }
+                const { value: memo } = await Swal.fire({
+                    title: 'Memo',
+                    text: 'Not required',
+                    input: 'text',
+                    showCancelButton: true
                 });
 
-                if(amount) {
-
-                    const { value: memo } = await Swal.fire({
-                        title: 'Memo',
-                        text: 'Not required',
-                        input: 'text',
-                        showCancelButton: true
-                    });
-
-                    $.ajax({
-                        url: "{{ route('add_expense') }}",
-                        type: 'POST',
-                        data: {
-                            category: category,
-                            amount: amount,
-                            memo: memo,
-                            _token: '{{ csrf_token() }}'
-                        },
-                    }).done(function (msg) {
-                        if (msg['success']) {
-                            var percentage = Math.round(parseFloat(msg['percentage']));
-                            var progress_bar = $(`#progress_${category}`);
-                            progress_bar.attr('aria-valuenow', percentage).width(`${percentage}%`);
-                            progress_bar.text(percentage + "%");
-                            if(percentage >= 100) {
-                                progress_bar.addClass('bg-danger');
-                            } else {
-                                progress_bar.removeClass('bg-danger');
-                            }
-
-
+                $.ajax({
+                    url: "{{ route('add_expense') }}",
+                    type: 'POST',
+                    data: {
+                        category: category_id,
+                        amount: amount,
+                        memo: memo,
+                        _token: '{{ csrf_token() }}'
+                    },
+                }).done(function (msg) {
+                    if (msg['success']) {
+                        var percentage = Math.round(parseFloat(msg['percentage']));
+                        var progress_bar = $(`#progress_${category_id}`);
+                        progress_bar.attr('aria-valuenow', percentage).width(`${percentage}%`);
+                        progress_bar.text(percentage + "%");
+                        if(percentage >= 100) {
+                            progress_bar.addClass('bg-danger');
                         } else {
-                            Swal.fire({
-                                title: 'Oops!',
-                                text: msg['msg'],
-                                type: 'warning',
-                                showCancelButton: false,
-                            });
+                            progress_bar.removeClass('bg-danger');
                         }
-                    });
-                }
+
+
+                    } else {
+                        Swal.fire({
+                            title: 'Oops!',
+                            text: msg['msg'],
+                            type: 'warning',
+                            showCancelButton: false,
+                        });
+                    }
+                });
             }
         }
 

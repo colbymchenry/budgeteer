@@ -51,20 +51,12 @@ class HomeController extends Controller
             }
         }
 
-        $net = auth()->user()->monthly_income - Expense::where('user', auth()->user()->id)->whereMonth('created_at', intval($month))->sum('amount');
-        $total_budget = Category::where('user', auth()->user()->id)->sum('limit');
-        $budgeted_fun_money = auth()->user()->monthly_income - $total_budget;
-
-        if($net < $budgeted_fun_money) {
-            $budgeted_fun_money = $net;
-        }
-
         $actual_expenses = \App\Expense::where('user', auth()->user()->id)->whereMonth('created_at', intval($month))->sum('amount');
         $left_for_budget = \App\Category::where('user', auth()->user()->id)->sum('limit') - \App\Expense::where('user', auth()->user()->id)->whereMonth('created_at', intval($month))->sum('amount');
 
         return view('home')->with('month', intval($month))->with('year', $year)->with('day', $day)
         ->with('expenses', $expenses)->with('month_selections_html', $month_selections_html)
-        ->with('fun_money', $budgeted_fun_money)->with('actual_expenses', $actual_expenses)->with('left_for_budget', $left_for_budget)
-        ->with('fun_money_category', auth()->user()->getFunMoneyCategory());
+        ->with('fun_money', auth()->user()->getFunMoneyCategory())->with('actual_expenses', $actual_expenses)
+        ->with('left_for_budget', $left_for_budget);
     }
 }
