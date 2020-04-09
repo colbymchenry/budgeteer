@@ -98,7 +98,7 @@
         category_limits[obj['id']] = obj['limit'];
     });
 
-    categories_array[-1] = "Uncategorized";
+    categories_array[-1] = "Fun Money";
 
     $(document).ready(function() {
         updateMonthlyTotal();

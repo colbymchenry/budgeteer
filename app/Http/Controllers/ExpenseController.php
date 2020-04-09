@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Category;
 use App\Expense;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ExpenseController extends Controller
 {
@@ -46,7 +47,13 @@ class ExpenseController extends Controller
         $year = $now->format('Y');
         $day = $now->format('d');
 
-        $percentage = ((Expense::where('user', auth()->user()->id)->where('category', $category)->whereMonth('created_at', intval($month))->sum('amount')) / (Category::where('user', auth()->user()->id)->where('id', $category)->get()[0]->limit))*100;
+        if($category == -1) {
+            $total_budget = Category::where('user', auth()->user()->id)->sum('limit');
+            $percentage = ((Expense::where('user', auth()->user()->id)->where('category', $category)->whereMonth('created_at', intval($month))->sum('amount')) / (auth()->user()->monthly_income - $total_budget))*100;
+        } else {
+            $percentage = ((Expense::where('user', auth()->user()->id)->where('category', $category)->whereMonth('created_at', intval($month))->sum('amount')) / (Category::where('user', auth()->user()->id)->where('id', $category)->get()[0]->limit))*100;
+        }
+
 
         return response()->json(['success' => true, 'expense' => $expense, 'percentage' => $percentage]);
     }
@@ -64,8 +71,13 @@ class ExpenseController extends Controller
         $category_id = \request('category');
         $month = \request('month');
 
-        $category = Category::where('user', auth()->user()->id)->where('id', $category_id)->get()[0];
-        $expenses = Expense::where('user', auth()->user()->id)->where('category', $category_id)->whereMonth('created_at', $month)->orderBy('created_at', 'DESC')->get();
+        if($category_id == -1) {
+            $category = auth()->user()->getFunMoneyCategory();
+            $expenses = Expense::where('user', auth()->user()->id)->where('category', $category_id)->whereMonth('created_at', $month)->orderBy('created_at', 'DESC')->get();
+        } else {
+            $category = Category::where('user', auth()->user()->id)->where('id', $category_id)->get()[0];
+            $expenses = Expense::where('user', auth()->user()->id)->where('category', $category_id)->whereMonth('created_at', $month)->orderBy('created_at', 'DESC')->get();
+        }
 
         return view('expense_list')->with('expenses', $expenses)->with('category', $category);
     }

@@ -101,14 +101,24 @@
                               </tr>
                             </thead>
                             <tbody id="expenses_body">
+                                <tr>
+                                    <th scope="row" >
+                                        <a id="category-expenses_{{ $fun_money_category->id }}" href="{{ route('view_expenses') }}?category={{ $fun_money_category->id}}&month={{ $month }}"><u>{{ $fun_money_category->name }}</u></a>
+                                    </th>
+                                    <td>
+                                        <div class="progress">
+                                            <div class="progress-bar @if(round(($fun_money_category->getTotalForMonth($month) / $fun_money_category->limit) * 100) >= 100) bg-danger @endif" role="progressbar" style="width: {{ round(($fun_money_category->getTotalForMonth($month) / $fun_money_category->limit) * 100) }}%;" aria-valuenow="{{ round(($fun_money_category->getTotalForMonth($month) / $fun_money_category->limit) * 100) }}" aria-valuemin="0" aria-valuemax="100" id="progress_{{ $fun_money_category->id }}">{{ round(($fun_money_category->getTotalForMonth($month) / $fun_money_category->limit) * 100) }}%</div>
+                                        </div>
+                                    </td>
+                                </tr>
                                 @foreach(\App\Category::where('user', auth()->user()->id)->get() as $category)
                                     <tr>
                                         <th scope="row" >
-                                            <a id="category-expenses-{{ $category->id }}" href="{{ route('view_expenses') }}?category={{ $category->id}}&month=4"><u>{{ $category->name }}</u></a>
+                                            <a id="category-expenses_{{ $category->id }}" href="{{ route('view_expenses') }}?category={{ $category->id}}&month={{ $month }}"><u>{{ $category->name }}</u></a>
                                         </th>
                                         <td>
                                             <div class="progress">
-                                                <div class="progress-bar @if(round(($category->getTotalForMonth($month) / $category->limit) * 100) >= 100) bg-danger @endif" role="progressbar" style="width: {{ round(($category->getTotalForMonth(4) / $category->limit) * 100) }}%;" aria-valuenow="{{ round(($category->getTotalForMonth(4) / $category->limit) * 100) }}" aria-valuemin="0" aria-valuemax="100" id="progress-{{ $category->id }}">{{ round(($category->getTotalForMonth(4) / $category->limit) * 100) }}%</div>
+                                                <div class="progress-bar @if(round(($category->getTotalForMonth($month) / $category->limit) * 100) >= 100) bg-danger @endif" role="progressbar" style="width: {{ round(($category->getTotalForMonth($month) / $category->limit) * 100) }}%;" aria-valuenow="{{ round(($category->getTotalForMonth($month) / $category->limit) * 100) }}" aria-valuemin="0" aria-valuemax="100" id="progress_{{ $category->id }}">{{ round(($category->getTotalForMonth($month) / $category->limit) * 100) }}%</div>
                                             </div>
                                         </td>
                                     </tr>
@@ -133,8 +143,8 @@
             $('#selection-month').on('change', function() {
                 var selected_month = $('#selection-month').val();
                 var id = this.id.split('-')[1];
-                $('[id^="category-expenses-"]').each(function() {
-                    var category_id = this.id.split('-')[2];
+                $('[id^="category-expenses_"]').each(function() {
+                    var category_id = this.id.split('_')[2];
                     $(this).attr('href', expenses_link + `?category=${category_id}&month=${selected_month}`);
                 });
 
@@ -156,7 +166,7 @@
                             var html = `
                                 <tr>
                                     <th scope="row" >
-                                        <a id="category-expenses-${id}" href="${expenses_link}?category=${id}&month=${selected_month}"><u>${name}</u></a>
+                                        <a id="category-expenses_${id}" href="${expenses_link}?category=${id}&month=${selected_month}"><u>${name}</u></a>
                                     </th>
                                     <td>
                             `;
@@ -164,13 +174,13 @@
                             if(percentage >= 100) {
                                 html += `
                                     <div class="progress">
-                                        <div class="progress-bar bg-danger" role="progressbar" style="width: ${percentage}%;" aria-valuenow="${percentage}" aria-valuemin="0" aria-valuemax="100" id="progress-${id}">${percentage}%</div>
+                                        <div class="progress-bar bg-danger" role="progressbar" style="width: ${percentage}%;" aria-valuenow="${percentage}" aria-valuemin="0" aria-valuemax="100" id="progress_${id}">${percentage}%</div>
                                     </div>
                                 `;
                             } else {
                                 html += `
                                     <div class="progress">
-                                        <div class="progress-bar" role="progressbar" style="width: ${percentage}%;" aria-valuenow="${percentage}" aria-valuemin="0" aria-valuemax="100" id="progress-${id}">${percentage}%</div>
+                                        <div class="progress-bar" role="progressbar" style="width: ${percentage}%;" aria-valuenow="${percentage}" aria-valuemin="0" aria-valuemax="100" id="progress_${id}">${percentage}%</div>
                                     </div>
                                 `;
                             }
@@ -215,7 +225,7 @@
             categories_array[obj['id']] = obj['name'];
         });
 
-        categories_array[-1] = "Uncategorized";
+        categories_array[-1] = "Fun Money";
 
 
         async function addExpense() {
@@ -271,7 +281,7 @@
                     }).done(function (msg) {
                         if (msg['success']) {
                             var percentage = Math.round(parseFloat(msg['percentage']));
-                            var progress_bar = $(`#progress-${category}`);
+                            var progress_bar = $(`#progress_${category}`);
                             progress_bar.attr('aria-valuenow', percentage).width(`${percentage}%`);
                             progress_bar.text(percentage + "%");
                             if(percentage >= 100) {

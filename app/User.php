@@ -31,4 +31,14 @@ class User extends Authenticatable
     public function getBankAccount() {
         return BankAccount::where('user', $this->id)->get()[0];
     }
+
+    public function getFunMoneyCategory() {
+        $total_budget = Category::where('user', $this->id)->sum('limit');
+        $fun_money_category = new Category();
+        $fun_money_category->id = -1;
+        $fun_money_category->limit = $this->monthly_income - $total_budget;
+        $fun_money_category->name = "Fun Money";
+        $fun_money_category->user = $this->id;
+        return $fun_money_category;
+    }
 }
