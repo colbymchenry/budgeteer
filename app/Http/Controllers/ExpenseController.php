@@ -51,6 +51,15 @@ class ExpenseController extends Controller
         return response()->json(['success' => true, 'expense' => $expense, 'percentage' => $percentage]);
     }
 
+    public function deleteExpense(Request $request) {
+        $id = $request['id'];
+
+        $expense = Expense::where('id', $id)->get()[0];
+        $expense->delete();
+
+        return response()->json(['success' => true]);
+    }
+
     public function viewExpenses(Request $request) {
         $category_id = \request('category');
         $month = \request('month');

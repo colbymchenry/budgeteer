@@ -52,7 +52,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::post('/add_expense', 'ExpenseController@addExpense')->name('add_expense');
 
-    Route::post('/del_expense', 'ExpenseController@delExpense')->name('del_expense');
+    Route::post('/del_expense', 'ExpenseController@deleteExpense')->name('del_expense');
 
     Route::post('/edit_expense', 'ExpenseController@editExpense')->name('edit_expense');
 
