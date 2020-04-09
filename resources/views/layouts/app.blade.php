@@ -7,6 +7,8 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    <link rel='icon' href="{{ asset('favicon.ico') }}" type='image/x-icon' />
+
     <title>{{ config('app.name', 'Budgeteer') }}</title>
 
     <!-- Scripts -->
@@ -25,7 +27,6 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-
 </head>
 <body>
     <div id="app">
