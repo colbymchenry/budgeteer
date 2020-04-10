@@ -112,13 +112,10 @@
                                     </td>
                                 </tr>
                                 @foreach(\App\Category::where('user', auth()->user()->id)->get() as $category)
+                                @if(!$category->recurring)
                                     <tr>
                                         <th scope="row" >
-                                            @if($category->recurring)
-                                                <a id="category-expenses_{{ $category->id }}" href="#"><u>{{ $category->name }}</u></a>
-                                            @else
-                                                <a id="category-expenses_{{ $category->id }}" href="{{ route('view_expenses') }}?category={{ $category->id}}&month={{ $month }}"><u>{{ $category->name }}</u></a>
-                                            @endif
+                                            <a id="category-expenses_{{ $category->id }}" href="{{ route('view_expenses') }}?category={{ $category->id}}&month={{ $month }}"><u>{{ $category->name }}</u></a>
                                         </th>
                                         <td>
                                             <div class="progress" onclick="addExpense('{{ $category->id }}', '{{ $category->name }}')">
@@ -126,6 +123,7 @@
                                             </div>
                                         </td>
                                     </tr>
+                                @endif
                                 @endforeach
                             </tbody>
                         </table>
