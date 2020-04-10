@@ -52,7 +52,8 @@ class HomeController extends Controller
         }
 
         $actual_expenses = \App\Expense::where('user', auth()->user()->id)->whereMonth('created_at', intval($month))->sum('amount');
-        $left_for_budget = \App\Category::where('user', auth()->user()->id)->sum('limit') - \App\Expense::where('user', auth()->user()->id)->whereMonth('created_at', intval($month))->sum('amount');
+        $actual_expenses += auth()->user()->getFixedCategorySum();
+        $left_for_budget = \App\Category::where('user', auth()->user()->id)->sum('limit') - $actual_expenses;
 
         return view('home')->with('month', intval($month))->with('year', $year)->with('day', $day)
         ->with('expenses', $expenses)->with('month_selections_html', $month_selections_html)

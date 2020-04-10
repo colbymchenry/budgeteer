@@ -103,7 +103,8 @@ class ExpenseController extends Controller
         }
 
         $actual_expenses = \App\Expense::where('user', auth()->user()->id)->whereMonth('created_at', intval($month))->sum('amount');
-        $left_for_budget = \App\Category::where('user', auth()->user()->id)->sum('limit') - \App\Expense::where('user', auth()->user()->id)->whereMonth('created_at', intval($month))->sum('amount');
+        $actual_expenses += auth()->user()->getFixedCategorySum();
+        $left_for_budget = \App\Category::where('user', auth()->user()->id)->sum('limit') - $actual_expenses;
 
         return response()->json(['success' => true, 'categories' => $categories, 'actual_expenses' => $actual_expenses, 'left_for_budget' => ($left_for_budget < 0 ? 0 : $left_for_budget), 'fun_money' => $budgeted_fun_money]);
     }

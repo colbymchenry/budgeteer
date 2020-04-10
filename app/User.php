@@ -41,4 +41,13 @@ class User extends Authenticatable
         $fun_money_category->user = $this->id;
         return $fun_money_category;
     }
+
+    public function getFixedCategories() {
+        return Category::where('user', $this->id)->where('recurring', true)->get();
+    }
+
+    public function getFixedCategorySum() {
+        return Category::where('user', $this->id)->where('recurring', true)->sum('limit');
+    }
+
 }

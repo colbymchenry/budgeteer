@@ -60,6 +60,8 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::get('/get_expenses_for_month', 'ExpenseController@getExpensesForMonth')->name('get_expenses_for_month');
 
+    Route::post('/set_recurring', 'CategoryController@setRecurring')->name('set_recurring');
+
 });
 
 

@@ -114,7 +114,11 @@
                                 @foreach(\App\Category::where('user', auth()->user()->id)->get() as $category)
                                     <tr>
                                         <th scope="row" >
-                                            <a id="category-expenses_{{ $category->id }}" href="{{ route('view_expenses') }}?category={{ $category->id}}&month={{ $month }}"><u>{{ $category->name }}</u></a>
+                                            @if($category->recurring)
+                                                <a id="category-expenses_{{ $category->id }}" href="#"><u>{{ $category->name }}</u></a>
+                                            @else
+                                                <a id="category-expenses_{{ $category->id }}" href="{{ route('view_expenses') }}?category={{ $category->id}}&month={{ $month }}"><u>{{ $category->name }}</u></a>
+                                            @endif
                                         </th>
                                         <td>
                                             <div class="progress" onclick="addExpense('{{ $category->id }}', '{{ $category->name }}')">
@@ -163,6 +167,7 @@
                             var amount = msg['categories'][key]['amount'];
                             var name = msg['categories'][key]['name'];
                             var percentage = parseFloat(msg['categories'][key]['percentage']);
+
                             var html = `
                                 <tr>
                                     <th scope="row" >

@@ -28,6 +28,20 @@ class CategoryController extends Controller
         return view('home');
     }
 
+    public function setRecurring(Request $request) {
+        $id = $request['id'];
+
+        if(!Category::where('user', auth()->user()->id)->where('id', $id)->exists()) {
+            return response()->json(['success' => false, 'msg' => 'Can\'t find category.']);
+        }
+
+        $category = Category::where('user', auth()->user()->id)->where('id', $id)->get()[0];
+        $category->recurring = !$category->recurring;
+        $category->save();
+
+        return response()->json(['success' => true, 'id' => $category->id]);
+    }
+
     public function addCategory(Request $request) {
         $name = $request['name'];
 

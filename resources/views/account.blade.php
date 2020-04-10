@@ -56,8 +56,9 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th scope="col" style="width: 50%;">Name</th>
-                                <th scope="col" style="width: 50%;">Monthly Limit</th>
+                                <th scope="col" style="width: 40%;"><small>Name</small></th>
+                                <th scope="col" style="width: 50%;"><small>Monthly Limit</small></th>
+                                <th scope="col" style="width: 10%;"><small>Fixed</small></th>
                             </tr>
                           </thead>
                         <tbody id="categories">
@@ -74,6 +75,9 @@
                                             <button class="btn btn-danger" onclick="delCategory('{{ $category->id }}')" style="display: block;margin: auto;"><i class="fa fa-close"></i></button>
                                         </div>
                                     </div>
+                                </td>
+                                <td style="vertical-align: middle;text-align: center;">
+                                    <div style="text-align: center;"><input style="text-align:center; vertical-align:middle" type="checkbox" name="recurring" id="recurring-{{ $category->id }}" onClick="setRecurring('{{ $category->id }}')" {{ $category->recurring ? 'checked' : '' }}> </div>
                                 </td>
                             </tr>
                             @endforeach
@@ -112,10 +116,29 @@
         });
     });
 
+    function setRecurring(id) {
+        $.ajax({
+            url: "{{ route('set_recurring') }}",
+            type: 'POST',
+            data: {
+                id: id,
+                _token: '{{ csrf_token() }}'
+            },
+        }).done(function (msg) {
+            if (msg['success']) {
 
+            } else {
+                Swal.fire({
+                    title: 'Oops!',
+                    text: msg['msg'],
+                    type: 'warning',
+                    showCancelButton: false,
+                });
+            }
+        });
+    }
 
     async function addCategory() {
-
 
         const { value: name } = await Swal.fire({
             inputPlaceholder: 'Name of Category',
