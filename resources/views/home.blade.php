@@ -101,7 +101,7 @@
                             <small>Fun Money Left:</small>
                         </div>
                         <div class="col">
-                            <small id="left-for-budget">- ${{ ($fun_money->limit - $fun_money_spent) }}</small>
+                            <small id="left-for-budget">= ${{ ($fun_money->limit - $fun_money_spent) }}</small>
                         </div>
                     </div>
 
