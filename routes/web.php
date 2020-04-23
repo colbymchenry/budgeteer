@@ -1,6 +1,7 @@
 <?php
 
 use App\Category;
+use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -23,9 +24,21 @@ Auth::routes();
 
 Route::group(['middleware' => ['auth']], function () {
 
+    Route::post('/update_password', function() {
+        $user = auth()->user();
+        $user->password = \Hash::make(\request('new_password'));
+        $user->save();
+        auth()->logout();
+        return redirect('/welcome');
+    });
+
+
+
     Route::get('/home', 'HomeController@index')->name('home');
 
     Route::view('/account', 'account')->name('account');
+
+    Route::view('/change_password', 'change_password')->name('change_password');
 
     Route::get('/bank_account', function() {
         $now = time(); // or your date as well
