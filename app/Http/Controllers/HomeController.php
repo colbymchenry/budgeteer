@@ -63,6 +63,6 @@ class HomeController extends Controller
         return view('home')->with('month', intval($month))->with('year', $year)->with('day', $day)
         ->with('expenses', $expenses)->with('month_selections_html', $month_selections_html)
         ->with('fun_money', auth()->user()->getFunMoneyCategory())->with('actual_expenses', $actual_expenses)
-        ->with('left_for_budget', $left_for_budget)->with('fun_money_spent', auth()->user()->getFunMoneySpentForMonth());
+        ->with('left_for_budget', $left_for_budget)->with('fun_money_spent', auth()->user()->getFunMoneySpentForMonth($month));
     }
 }
