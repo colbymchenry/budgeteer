@@ -78,13 +78,22 @@
                     <div class="row">
                         <div class="col-8">
                             @if($left_for_budget < 0)
-                                <small id="fun-money-label">Fun Money: (${{ auth()->user()->monthly_income }} - ${{ $actual_expenses }})</small>
+                                <small id="fun-money-label">Budgeted Fun Money: (${{ auth()->user()->monthly_income }} - ${{ $actual_expenses }})</small>
                             @else
-                                <small id="fun-money-label">Fun Money: (${{ auth()->user()->monthly_income }} - ${{ \App\Category::where('user', auth()->user()->id)->sum('limit') }})</small>
+                                <small id="fun-money-label">Budgeted Fun Money: (${{ auth()->user()->monthly_income }} - ${{ \App\Category::where('user', auth()->user()->id)->sum('limit') }})</small>
                             @endif
                         </div>
                         <div class="col">
                             <small id="fun-money">&nbsp;&nbsp;&nbsp;${{ $fun_money->limit }}</small>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-8">
+                            <small>Fun Money Spent:</small>
+                        </div>
+                        <div class="col">
+                            <small id="left-for-budget">= ${{ $fun_money_spent }}</small>
                         </div>
                     </div>
 
