@@ -51,7 +51,12 @@ class HomeController extends Controller
             }
         }
 
-        $actual_expenses = \App\Expense::where('user', auth()->user()->id)->where('category', '!=', '-1')->where('recurring', false)->whereMonth('created_at', intval($month))->sum('amount');
+        // don't add fun money expenses or fixed expenses to actual expenses
+        $actual_expenses = 0;
+        foreach(\App\Expense::where('user', auth()->user()->id)->where('category', '!=', '-1')->whereMonth('created_at', intval($month))->get() as $expense) {
+            $category = Category::where('id', $expense->category)->first();
+            if(! $category->recurring) $actual_expenses += $expense->amount;
+        }
         $actual_expenses += auth()->user()->getFixedCategorySum();
         $left_for_budget = \App\Category::where('user', auth()->user()->id)->sum('limit') - $actual_expenses;
 
