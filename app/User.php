@@ -33,11 +33,11 @@ class User extends Authenticatable
     }
 
     public function getFunMoneyExpensesForMonth($month) {
-        return Expense::where('user', $this->id)->where('category', '-1')->whereMonth(intval($month))->get();
+        return Expense::where('user', $this->id)->where('category', '-1')->whereMonth('created_at', intval($month))->get();
     }
 
     public function getFunMoneySpentForMonth($month) {
-        return Expense::where('user', $this->id)->where('category', '-1')->whereMonth(intval($month))->sum('amount');
+        return Expense::where('user', $this->id)->where('category', '-1')->whereMonth('created_at', intval($month))->sum('amount');
     }
 
     public function getFunMoneyCategory() {
