@@ -79,7 +79,7 @@ class ExpenseController extends Controller
             $expenses = Expense::where('user', auth()->user()->id)->where('category', $category_id)->whereMonth('created_at', $month)->orderBy('created_at', 'DESC')->get();
         }
 
-        return view('expense_list')->with('expenses', $expenses)->with('category', $category);
+        return view('expense_list')->with('expenses', $expenses)->with('category', $category)->with('total', $category->getTotalForMonth($month));
     }
 
     public function getExpensesForMonth(Request $request) {
