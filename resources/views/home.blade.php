@@ -75,6 +75,7 @@
                         </div>
                     </div>
 
+                    <hr />
                     <div class="row">
                         <div class="col-8">
                             @if($left_for_budget < 0)
@@ -87,13 +88,20 @@
                             <small id="fun-money">&nbsp;&nbsp;&nbsp;${{ $fun_money->limit }}</small>
                         </div>
                     </div>
-
                     <div class="row">
                         <div class="col-8">
                             <small>Fun Money Spent:</small>
                         </div>
                         <div class="col">
-                            <small id="left-for-budget">= ${{ $fun_money_spent }}</small>
+                            <small id="left-for-budget">- ${{ $fun_money_spent }}</small>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-8">
+                            <small>Fun Money Left:</small>
+                        </div>
+                        <div class="col">
+                            <small id="left-for-budget">- ${{ ($fun_money->limit - $fun_money_spent) }}</small>
                         </div>
                     </div>
 
