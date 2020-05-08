@@ -47,14 +47,15 @@
                                     <label class="col-form-label text-md-right" for="fun-money">Fun Money till next paycheck</label>
                                     <input type="text" id="fun-money" name="fun-money" class="form-control" value="${{ auth()->user()->getBankAccount()->balance - ($days_next_paycheck * round($daily_budget)) }}" disabled />
                                 </div>
+                                <br />
+                                <button type="button" class="btn btn-primary" style="position: absolute; right: 10px; top: 5px;" onclick="updateMonthlyIncome()">
+                                    Make Monthly Income
+                                </button>
                             </div>
 
                             <div class="form-group row" style="width: 100%;">
                                 <button type="button" class="btn btn-success" style="position: absolute; right: 10px; top: 5px;" onclick="updateBankAccount()">
                                     Save
-                                </button>
-                                <button type="button" class="btn btn-primary" style="position: absolute; right: 10px; top: 5px;" onclick="updateMonthlyIncome()">
-                                    Make Monthly Income
                                 </button>
                             </div>
                         </div>
