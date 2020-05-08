@@ -55,6 +55,8 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::post('/update_monthly_income', 'AccountController@updateMonthlyIncome')->name('update_monthly_income');
 
+    Route::post('/update_monthly_income_bankacct', 'AccountController@updateMonthlyIncomeBankAcct')->name('update_monthly_income_bankacct');
+
     Route::post('/add_category', 'CategoryController@addCategory')->name('add_category');
 
     Route::post('/del_category', 'CategoryController@delCategory')->name('del_category');

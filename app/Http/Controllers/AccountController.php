@@ -62,4 +62,26 @@ class AccountController extends Controller
         'monthly_budget' => $monthly_budget, 'fun_money' => $fun_money]);
     }
 
+    public function updateMonthlyIncomeBankAcct(Request $request) {
+        $balance = $request['balance'];
+        $next_paycheck = $request['next_paycheck'];
+
+        $bankaccount = BankAccount::where('user', auth()->user()->id)->get()[0];
+        $bankaccount->balance = $balance;
+        $bankaccount->next_paycheck = $next_paycheck;
+        $bankaccount->save();
+
+        $now = time();
+        $your_date = strtotime(auth()->user()->getBankAccount()->next_paycheck);
+        $datediff = $your_date - $now;
+
+        $days_next_paycheck = round($datediff / (60 * 60 * 24));
+
+        $user = auth()->user();
+        $user->monthly_income = $bankaccount->balance / ($days_next_paycheck / 30.42);
+        $user->save();
+
+        return response()->json(['success' => true, 'msg' => 'Monthly Income Now: $' . $user->monthly_income]);
+    }
+
 }

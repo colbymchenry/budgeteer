@@ -54,6 +54,11 @@
                                     Save
                                 </button>
                             </div>
+                            <div class="form-group row" style="width: 100%;">
+                                <button type="button" class="btn btn-primary" style="position: absolute; right: 10px; top: 5px;" onclick="updateMonthlyIncome()">
+                                    Make Monthly Income
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -81,6 +86,35 @@
                 $('#daily-budget').val('$' + msg['daily_budget']);
                 $('#monthly-budget').val('$' + msg['monthly_budget']);
                 $('#fun-money').val('$' + msg['fun_money']);
+            } else {
+                Swal.fire({
+                    title: 'Oops!',
+                    text: msg['msg'],
+                    type: 'warning',
+                    showCancelButton: false,
+                });
+            }
+        });
+
+    }
+
+    function updateMonthlyIncome() {
+        $.ajax({
+            url: "{{ route('update_monthly_income_bankacct') }}",
+            type: 'POST',
+            data: {
+                balance: $('#balance').val(),
+                next_paycheck: $('#next_paycheck').val(),
+                _token: '{{ csrf_token() }}'
+            },
+        }).done(function (msg) {
+            if (msg['success']) {
+                Swal.fire({
+                    title: 'Success!',
+                    text: msg['msg'],
+                    type: 'success',
+                    showCancelButton: false,
+                });
             } else {
                 Swal.fire({
                     title: 'Oops!',
