@@ -53,8 +53,6 @@
                                 <button type="button" class="btn btn-success" style="position: absolute; right: 10px; top: 5px;" onclick="updateBankAccount()">
                                     Save
                                 </button>
-                            </div>
-                            <div class="form-group row" style="width: 100%;">
                                 <button type="button" class="btn btn-primary" style="position: absolute; right: 10px; top: 5px;" onclick="updateMonthlyIncome()">
                                     Make Monthly Income
                                 </button>
