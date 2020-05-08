@@ -162,78 +162,8 @@
             $('#selection-month').on('change', function() {
                 var selected_month = $('#selection-month').val();
                 var id = this.id.split('-')[1];
-                $('[id^="category-expenses_"]').each(function() {
-                    var category_id = this.id.split('_')[2];
-                    $(this).attr('href', expenses_link + `?category=${category_id}&month=${selected_month}`);
-                });
 
-                $.ajax({
-                    url: "{{ route('get_expenses_for_month') }}",
-                    type: 'GET',
-                    data: {
-                        month: selected_month,
-                        _token: '{{ csrf_token() }}'
-                    },
-                }).done(function (msg) {
-                    if (msg['success']) {
-                        $('#expenses_body').empty();
-                        for (var key in msg['categories']) {
-                            var id = key;
-                            var amount = msg['categories'][key]['amount'];
-                            var name = msg['categories'][key]['name'];
-                            var percentage = parseFloat(msg['categories'][key]['percentage']);
-
-                            var html = `
-                                <tr>
-                                    <th scope="row" >
-                                        <a id="category-expenses_${id}" href="${expenses_link}?category=${id}&month=${selected_month}"><u>${name}</u></a>
-                                    </th>
-                                    <td>
-                            `;
-
-                            if(percentage >= 100) {
-                                html += `
-                                    <div class="progress" onclick="addExpense('${id}', '${name}')">
-                                        <div class="progress-bar bg-danger" role="progressbar" style="width: ${percentage}%;" aria-valuenow="${percentage}" aria-valuemin="0" aria-valuemax="100" id="progress_${id}">${percentage}%</div>
-                                    </div>
-                                `;
-                            } else {
-                                html += `
-                                    <div class="progress" onclick="addExpense('${id}', '${name}')">
-                                        <div class="progress-bar" role="progressbar" style="width: ${percentage}%;" aria-valuenow="${percentage}" aria-valuemin="0" aria-valuemax="100" id="progress_${id}">${percentage}%</div>
-                                    </div>
-                                `;
-                            }
-
-                            html += `
-                                    </td>
-                                </tr>
-                            `;
-                            $('#expenses_body').append(html);
-
-                            var actual_expenses = msg['actual_expenses'];
-                            var left_for_budget = msg['left_for_budget'];
-                            var fun_money = msg['fun_money'];
-
-                            $('#actual-expenses').text(`- $${actual_expenses}`);
-                            $('#left-for-budget').text(`= $${left_for_budget}`);
-                            $('#fun-money').text(`= $${fun_money}`);
-
-                            if(left_for_budget <= 0) {
-                                $('#fun-money-label').text(`Fun Money: ($${monthly_income} - $${actual_expenses})`);
-                            } else {
-                                $('#fun-money-label').text(`Fun Money: ($${monthly_income} - $${budgeted_expenses})`);
-                            }
-                        }
-                    } else {
-                        Swal.fire({
-                            title: 'Oops!',
-                            text: msg['msg'],
-                            type: 'warning',
-                            showCancelButton: false,
-                        });
-                    }
-                });
+                window.location.href = `/home?month=${selected_month}`;
             });
         });
 

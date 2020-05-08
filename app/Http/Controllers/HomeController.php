@@ -32,6 +32,10 @@ class HomeController extends Controller
         $year = $now->format('Y');
         $day = $now->format('d');
 
+        if(\request('month')) {
+            Log::info(\request('month'));
+        }
+
         // add up all expenses
         $expenses = array();
         for($i = 12; $i > 0; $i--) {
