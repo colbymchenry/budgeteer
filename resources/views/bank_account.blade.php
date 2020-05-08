@@ -48,7 +48,7 @@
                                     <input type="text" id="fun-money" name="fun-money" class="form-control" value="${{ auth()->user()->getBankAccount()->balance - ($days_next_paycheck * round($daily_budget)) }}" disabled />
                                 </div>
                                 <br />
-                                <button type="button" class="btn btn-primary" style="position: absolute; right: 10px; top: 5px;" onclick="updateMonthlyIncome()">
+                                <button type="button" class="btn btn-primary" onclick="updateMonthlyIncome()">
                                     Make Monthly Income
                                 </button>
                             </div>
