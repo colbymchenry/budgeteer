@@ -33,7 +33,7 @@ class HomeController extends Controller
         $day = $now->format('d');
 
         if(\request('month')) {
-            Log::info(\request('month'));
+            $month = \request('month');
         }
 
         // add up all expenses
