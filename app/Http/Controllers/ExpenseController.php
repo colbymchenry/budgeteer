@@ -43,7 +43,7 @@ class ExpenseController extends Controller
         $expense->save();
 
         $now = new \DateTime('now');
-        $month = $now->format('m');
+        $month = \request('month');
         $year = $now->format('Y');
         $day = $now->format('d');
 

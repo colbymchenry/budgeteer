@@ -213,6 +213,7 @@
                         category: category_id,
                         amount: amount,
                         memo: memo,
+                        $('#selection-month').val(),
                         _token: '{{ csrf_token() }}'
                     },
                 }).done(function (msg) {
