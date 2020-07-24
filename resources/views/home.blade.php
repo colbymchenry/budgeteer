@@ -182,10 +182,12 @@
 
             const { value: amount } = await Swal.fire({
                 title: 'Amount',
-                msg: name,
-                input: 'text',
+                input: 'number',
                 showCancelButton: true,
                 confirmButtonText: 'Next',
+                inputAttributes: {
+                  pattern: '\\d*'
+                },
                 inputValidator: (value) => {
                     if (!value) {
                         return 'You need to write something!'
@@ -205,38 +207,42 @@
                     input: 'text',
                     showCancelButton: true
                 });
+                
+                
+                if(memo) {
+                    $.ajax({
+                        url: "{{ route('add_expense') }}",
+                        type: 'POST',
+                        data: {
+                            category: category_id,
+                            amount: amount,
+                            memo: memo,
+                            month: $('#selection-month').val(),
+                            _token: '{{ csrf_token() }}'
+                        },
+                    }).done(function (msg) {
+                        if (msg['success']) {
+                            var percentage = Math.round(parseFloat(msg['percentage']));
+                            var progress_bar = $(`#progress_${category_id}`);
+                            progress_bar.attr('aria-valuenow', percentage).width(`${percentage}%`);
+                            progress_bar.text(percentage + "%");
+                            if(percentage >= 100) {
+                                progress_bar.addClass('bg-danger');
+                            } else {
+                                progress_bar.removeClass('bg-danger');
+                            }
 
-                $.ajax({
-                    url: "{{ route('add_expense') }}",
-                    type: 'POST',
-                    data: {
-                        category: category_id,
-                        amount: amount,
-                        memo: memo,
-                        _token: '{{ csrf_token() }}'
-                    },
-                }).done(function (msg) {
-                    if (msg['success']) {
-                        var percentage = Math.round(parseFloat(msg['percentage']));
-                        var progress_bar = $(`#progress_${category_id}`);
-                        progress_bar.attr('aria-valuenow', percentage).width(`${percentage}%`);
-                        progress_bar.text(percentage + "%");
-                        if(percentage >= 100) {
-                            progress_bar.addClass('bg-danger');
+
                         } else {
-                            progress_bar.removeClass('bg-danger');
+                            Swal.fire({
+                                title: 'Oops!',
+                                text: msg['msg'],
+                                type: 'warning',
+                                showCancelButton: false,
+                            });
                         }
-
-
-                    } else {
-                        Swal.fire({
-                            title: 'Oops!',
-                            text: msg['msg'],
-                            type: 'warning',
-                            showCancelButton: false,
-                        });
-                    }
-                });
+                    });
+                }
             }
         }
 
