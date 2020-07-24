@@ -231,8 +231,6 @@
                             } else {
                                 progress_bar.removeClass('bg-danger');
                             }
-
-
                         } else {
                             Swal.fire({
                                 title: 'Oops!',
